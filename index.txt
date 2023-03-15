@@ -1,4 +1,9 @@
- data send through postman
+npm init -y
+npm i mongoose
+npm i express
+
+
+data send through postman
  --------------------------
 
 
