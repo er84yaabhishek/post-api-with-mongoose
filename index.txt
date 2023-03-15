@@ -33,3 +33,63 @@ postman   :::::   localhost:5000/create
     "brand":"jeone",
     "category":"mobile"
 }
+
+
+to check delete operation is working
+--------------------------------------
+
+1-> app.delete("/delete/:id", async (req, resp) => {
+    resp.send("done");
+    });
+
+    Postman::::delete localhost:5000/delete/maxx
+
+    done
+
+2-> app.delete("/delete/:id", async (req, resp) => {
+    console.log(req.params);     params means what is present in parameter
+    resp.send("done");
+    });
+
+postman ->  localhost:5000/delete/maxx 
+            localhost:5000/delete/6411bb71cbf50eda73af08a1
+cmd ->   { id: 'maxx' }
+        { id: '6411bb71cbf50eda73af08a1' }
+
+3->  app.delete("/delete/:_id", async (req, resp) => {
+    console.log(req.params);
+    let data = await Product.deleteOne(req.params);
+    resp.send(data);
+    });
+
+
+postman
+-------
+localhost:5000/delete/6411bcdfcbf50eda73af08a3
+{
+    "acknowledged": true,
+    "deletedCount": 1
+}
+
+cmd---->>>>
+    { _id: '6411bb71cbf50eda73af08a1' }
+    { _id: '6411bcdfcbf50eda73af08a3' }
+
+
+    update
+    -------
+    app.put("/update/:_id", async (req, resp) => {
+  console.log(req.params);
+  let data = await Product.updateOne(req.params, {
+    $set: req.body,
+  });
+  resp.send(data);
+});
+
+postman::::::
+
+put localhost:5000/update/6402e4655af57d21dde3a4ff
+body raw json
+{
+    "price":4000
+}
