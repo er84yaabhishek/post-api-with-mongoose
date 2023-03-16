@@ -1,95 +1,64 @@
- data send through postman
- --------------------------
-
-
-// const app = express();
-// app.use(express.json());
-// app.post("/create", (req, resp) => {
-//   console.log(req.body);
-//   resp.send("done");
-// });
-
-postman data send to mongodb
-----------------------------
-
-const app = express();
-app.use(express.json());
-app.post("/create", async (req, resp) => {
-  let data = new Product(req.body);
-  let result = await data.save();
-  console.log(result);
-  resp.send(result);
-});
-
-
-
-postman   :::::   localhost:5000/create
- body raw json
- localhost:5000/create
-
- {
-    "name":"jeone",
-    "price":5600,
-    "brand":"jeone",
-    "category":"mobile"
-}
-
-
-to check delete operation is working
+search API in nodejs with mongo DB
 --------------------------------------
 
-1-> app.delete("/delete/:id", async (req, resp) => {
-    resp.send("done");
-    });
+Make simple GET Route for API
 
-    Postman::::delete localhost:5000/delete/maxx
+search with single field
 
-    done
+search with multiple fields
 
-2-> app.delete("/delete/:id", async (req, resp) => {
-    console.log(req.params);     params means what is present in parameter
-    resp.send("done");
-    });
-
-postman ->  localhost:5000/delete/maxx 
-            localhost:5000/delete/6411bb71cbf50eda73af08a1
-cmd ->   { id: 'maxx' }
-        { id: '6411bb71cbf50eda73af08a1' }
-
-3->  app.delete("/delete/:_id", async (req, resp) => {
-    console.log(req.params);
-    let data = await Product.deleteOne(req.params);
-    resp.send(data);
-    });
+Test API
 
 
-postman
--------
-localhost:5000/delete/6411bcdfcbf50eda73af08a3
-{
-    "acknowledged": true,
-    "deletedCount": 1
-}
-
-cmd---->>>>
-    { _id: '6411bb71cbf50eda73af08a1' }
-    { _id: '6411bcdfcbf50eda73af08a3' }
 
 
-    update
-    -------
-    app.put("/update/:_id", async (req, resp) => {
-  console.log(req.params);
-  let data = await Product.updateOne(req.params, {
-    $set: req.body,
-  });
+
+search api with postman
+--------------------------
+
+app.get("/search/:key", async (req, resp) => {
+  console.log(req.params.key);
+  let data = await Product.find();
   resp.send(data);
 });
 
-postman::::::
+get localhost:8000/search/samsung
+cmd samsung
 
-put localhost:5000/update/6402e4655af57d21dde3a4ff
-body raw json
-{
-    "price":4000
-}
+==========================================================================
+app.use(express.json());
+app.get("/search/:key", async (req, resp) => {
+  console.log(req.params.key);
+  let data = await Product.find({
+    $or: [{ name: { $regex: req.params.key } }],
+  });
+  resp.send(data);
+});
+app.listen(8000);
+
+postman-------
+get         localhost:8000/search/glaxy40
+ cmd ----   glaxy40
+=============================================================================
+name brand ko b search krega
+-----------------------------
+
+app.use(express.json());
+app.get("/search/:key", async (req, resp) => {
+  console.log(req.params.key);
+  let data = await Product.find({
+    $or: [
+      { name: { $regex: req.params.key } },
+      { brand: { $regex: req.params.key } },
+    ],
+  });
+  resp.send(data);
+});
+app.listen(8000);
+
+
+postman---
+            localhost:8000/search/sam
+             localhost:8000/search/oppo
+             cmd sam
+                 oppo
